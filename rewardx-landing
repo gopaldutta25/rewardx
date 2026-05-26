@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RewardX for Restaurants — Grow Your Restaurant with Loyalty</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0E0B07;
+  --cream: #F5F0E8;
+  --warm: #EDE6D5;
+  --saffron: #E8600A;
+  --saffron2: #F28C3A;
+  --green: #1A7A4A;
+  --wa: #25D366;
+  --red: #C0392B;
+  --gold: #C9940A;
+  --border: rgba(14,11,7,0.12);
+  --text-muted: #6B6358;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--saffron); position: fixed; z-index: 9999;
+  pointer-events: none; mix-blend-mode: multiply;
+  transform: translate(-50%,-50%);
+  transition: transform .1s, width .25s, height .25s;
+}
+.cursor-ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--saffron); position: fixed; z-index: 9998;
+  pointer-events: none; transform: translate(-50%,-50%);
+  transition: transform .18s ease, width .25s, height .25s, opacity .25s;
+  opacity: .5;
+}
+body:hover .cursor { transform: translate(-50%,-50%) scale(1); }
+a:hover ~ .cursor, button:hover ~ .cursor { width: 20px; height: 20px; }
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: .6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 18px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(245,240,232,0.88); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: padding .3s;
+}
+.nav-logo {
+  font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900;
+  color: var(--saffron); letter-spacing: -.5px;
+}
+.nav-logo span { color: var(--ink); }
+.nav-logo sup { font-size: 12px; color: var(--text-muted); font-weight: 400; vertical-align: super; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--text-muted);
+  text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--saffron); }
+.nav-cta {
+  background: var(--ink); color: var(--cream);
+  padding: 10px 22px; border-radius: 100px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: background .2s, transform .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-cta:hover { background: var(--saffron); transform: scale(1.02); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; padding: 120px 48px 80px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center; position: relative;
+  max-width: 1280px; margin: 0 auto;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--warm); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 13px; font-weight: 600; color: var(--saffron);
+  margin-bottom: 24px;
+  animation: fadeUp .6s ease .1s both;
+}
+.hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero h1 {
+  font-family: 'Fraunces', serif; font-size: clamp(42px, 5vw, 72px);
+  font-weight: 900; line-height: 1.05; letter-spacing: -1.5px;
+  margin-bottom: 24px;
+  animation: fadeUp .6s ease .2s both;
+}
+.hero h1 em { color: var(--saffron); font-style: italic; }
+.hero h1 .underline-word {
+  position: relative; display: inline-block;
+}
+.hero h1 .underline-word::after {
+  content: '';
+  position: absolute; bottom: 4px; left: 0; right: 0; height: 6px;
+  background: var(--saffron); border-radius: 3px; opacity: .25; z-index: -1;
+}
+
+.hero-sub {
+  font-size: 18px; color: var(--text-muted); line-height: 1.7;
+  margin-bottom: 36px; max-width: 480px;
+  animation: fadeUp .6s ease .3s both;
+}
+.hero-sub strong { color: var(--ink); font-weight: 600; }
+
+.hero-actions {
+  display: flex; flex-direction: column; gap: 12px;
+  animation: fadeUp .6s ease .4s both;
+}
+.wa-signup-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--wa); color: #fff;
+  padding: 16px 28px; border-radius: 16px;
+  font-size: 17px; font-weight: 700; text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 8px 32px rgba(37,211,102,0.3);
+  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  width: fit-content;
+}
+.wa-signup-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(37,211,102,0.4); }
+.wa-signup-btn .wa-ico { font-size: 22px; }
+.wa-small { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.wa-small::before { content: ''; width: 16px; height: 1px; background: var(--border); }
+
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 36px; padding-top: 32px;
+  border-top: 1px solid var(--border);
+  animation: fadeUp .6s ease .5s both;
+}
+.hero-stat .num {
+  font-family: 'Fraunces', serif; font-size: 32px; font-weight: 900;
+  color: var(--ink); line-height: 1;
+}
+.hero-stat .num span { color: var(--saffron); }
+.hero-stat .lbl { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+/* Hero Right — visual */
+.hero-visual {
+  position: relative;
+  animation: fadeUp .6s ease .3s both;
+}
+.hero-phone-wrap {
+  position: relative; display: flex; justify-content: center;
+}
+.hero-phone {
+  width: 260px; background: var(--ink);
+  border-radius: 40px; padding: 16px;
+  box-shadow: 0 32px 80px rgba(14,11,7,0.25), 0 0 0 1px rgba(255,255,255,0.05);
+  position: relative; z-index: 2;
+}
+.phone-notch {
+  width: 80px; height: 20px; background: var(--ink);
+  border-radius: 0 0 14px 14px; margin: 0 auto 14px;
+  position: relative; z-index: 3;
+  box-shadow: 0 0 0 2px #1a1710;
+}
+.phone-inner {
+  background: linear-gradient(160deg, #1c0d02, #2e1505);
+  border-radius: 28px; overflow: hidden; min-height: 460px;
+  padding: 20px 16px;
+}
+.phone-shop-header {
+  text-align: center; margin-bottom: 20px;
+}
+.phone-shop-logo {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--saffron), #b84d08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin: 0 auto 8px;
+}
+.phone-shop-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: #fff; }
+.phone-shop-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+.phone-coin-card {
+  background: linear-gradient(135deg, rgba(232,96,10,0.2), rgba(242,140,58,0.1));
+  border: 1px solid rgba(232,96,10,0.3); border-radius: 16px; padding: 14px;
+  margin-bottom: 14px; text-align: center;
+}
+.phone-coin-amt { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 900; color: var(--saffron2); line-height: 1; }
+.phone-coin-lbl { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+.phone-coin-val { font-size: 13px; color: var(--saffron2); margin-top: 6px; font-weight: 600; }
+
+.phone-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+.phone-act {
+  flex: 1; border-radius: 10px; padding: 9px 6px; text-align: center;
+  font-size: 11px; font-weight: 600;
+}
+.phone-act.primary { background: var(--saffron); color: #fff; }
+.phone-act.secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); }
+
+.phone-offer {
+  background: rgba(26,122,74,0.15); border: 1px solid rgba(26,122,74,0.3);
+  border-radius: 12px; padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.phone-offer .off-ico { font-size: 20px; }
+.phone-offer .off-text { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+.phone-offer .off-text strong { color: #5de38a; display: block; }
+
+/* Floating badges around phone */
+.float-badge {
+  position: absolute; background: #fff;
+  border-radius: 14px; padding: 10px 14px;
+  box-shadow: 0 8px 32px rgba(14,11,7,0.12);
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border);
+  animation: float 3s ease-in-out infinite;
+  white-space: nowrap;
+}
+.float-badge .fb-ico { font-size: 20px; }
+.float-badge .fb-text { font-size: 12px; }
+.float-badge .fb-text strong { display: block; font-weight: 700; font-size: 13px; }
+.float-badge .fb-text span { color: var(--text-muted); font-size: 11px; }
+.float-badge.left { left: -40px; top: 30%; animation-delay: .5s; }
+.float-badge.right { right: -40px; top: 55%; animation-delay: 1s; }
+.float-badge.top { right: -20px; top: 5%; animation-delay: .2s; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+/* ── BIG NUMBER STRIP ── */
+.number-strip {
+  background: var(--ink); color: var(--cream);
+  padding: 40px 48px;
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ns-item { text-align: center; padding: 0 20px; position: relative; }
+.ns-item::after { content: ''; position: absolute; right: 0; top: 10%; bottom: 10%; width: 1px; background: rgba(255,255,255,0.08); }
+.ns-item:last-child::after { display: none; }
+.ns-num {
+  font-family: 'Fraunces', serif; font-size: 52px; font-weight: 900;
+  color: var(--saffron); line-height: 1;
+}
+.ns-lbl { font-size: 14px; color: rgba(245,240,232,0.5); margin-top: 8px; line-height: 1.4; }
+
+/* ── PROBLEM SECTION ── */
+.problem-section {
+  max-width: 1280px; margin: 0 auto; padding: 100px 48px;
+}
+.section-tag {
+  display: inline-block; background: var(--warm); border: 1px solid var(--border);
+  border-radius: 100px; padding: 5px 16px;
+  font-size: 12px; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;
+}
+.problem-section h2 {
+  font-family: 'Fraunces', serif; font-size: clamp(32px, 4vw, 54px);
+  font-weight: 900; line-height: 1.1; letter-spacing: -1px;
+  margin-bottom: 60px; max-width: 700px;
+}
+.problem-section h2 em { color: var(--saffron); font-style: italic; }
+
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+.problem-card {
+  background: var(--warm); border: 1px solid var(--border);
+  border-radius: 24px; padding: 28px;
+  transition: transform .2s, box-shadow .2s;
+}
+.problem-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(14,11,7,0.1); }
+.problem-card .pc-ico { font-size: 36px; margin-bottom: 16px; }
+.problem-card h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.problem-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+.problem-card .pc-loss { font-size: 13px; font-weight: 700; color: var(--red); margin-top: 12px; background: rgba(192,57,43,0.08); padding: 6px 12px; border-radius: 8px; display: inline-block; }
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  background: var(--ink); color: var(--cream);
+  padding: 100px 48px;
+}
+.how-inner { max-width: 1280px; margin: 0 auto; }
+.how-section .section-tag { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: rgba(245,240,232,0.5); }
+.how-section h2 {
+  font-family: 'Fraunces', serif; font-size: clamp(32px, 4vw, 54px);
+  font-weight: 900; line-height: 1.1; letter-spacing: -1px;
+  margin-bottom: 60px; max-width: 600px;
+}
+.how-section h2 em { color: var(--saffron); font-style: italic; }
+
+.steps-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+.step-block {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: background .2s;
+}
+.step-block:hover { background: rgba(255,255,255,0.06); }
+.step-block::before {
+  content: attr(data-n);
+  position: absolute; top: -10px; right: 16px;
+  font-family: 'Fraunces', serif; font-size: 80px; font-weight: 900;
+  color: rgba(255,255,255,0.03); line-height: 1;
+}
+.step-block .sb-ico { font-size: 32px; margin-bottom: 16px; }
+.step-block h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+.step-block p { font-size: 14px; color: rgba(245,240,232,0.5); line-height: 1.7; }
+.step-block .sb-time { font-size: 12px; color: var(--saffron); font-weight: 700; margin-top: 14px; display: flex; align-items: center; gap: 4px; }
+
+/* ── SOCIAL PROOF ── */
+.proof-section {
+  max-width: 1280px; margin: 0 auto; padding: 100px 48px;
+}
+.proof-section h2 {
+  font-family: 'Fraunces', serif; font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 900; line-height: 1.1; letter-spacing: -1px;
+  margin-bottom: 48px; text-align: center;
+}
+.proof-section h2 em { color: var(--saffron); font-style: italic; }
+
+.testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.testi-card {
+  background: var(--warm); border: 1px solid var(--border);
+  border-radius: 24px; padding: 28px;
+  transition: transform .2s;
+}
+.testi-card:hover { transform: translateY(-4px); }
+.testi-stars { color: var(--gold); font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+.testi-quote { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; line-height: 1.5; margin-bottom: 18px; color: var(--ink); }
+.testi-quote em { color: var(--saffron); font-style: normal; }
+.testi-person { display: flex; align-items: center; gap: 12px; }
+.testi-av {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--saffron), #8a3800);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.testi-name { font-size: 14px; font-weight: 700; }
+.testi-biz { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.testi-result { font-size: 12px; color: var(--green); font-weight: 700; margin-top: 4px; }
+
+/* ── PRICING ── */
+.pricing-section {
+  background: var(--warm); padding: 100px 48px;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.pricing-inner { max-width: 1000px; margin: 0 auto; }
+.pricing-section h2 {
+  font-family: 'Fraunces', serif; font-size: clamp(28px,3.5vw,48px);
+  font-weight: 900; letter-spacing: -1px; text-align: center; margin-bottom: 12px;
+}
+.pricing-sub { text-align: center; font-size: 16px; color: var(--text-muted); margin-bottom: 48px; }
+.pricing-sub strong { color: var(--green); }
+
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.price-card {
+  background: var(--cream); border: 2px solid var(--border);
+  border-radius: 24px; padding: 28px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  position: relative; overflow: hidden;
+}
+.price-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(14,11,7,0.1); }
+.price-card.featured {
+  background: var(--ink); color: var(--cream);
+  border-color: var(--saffron); transform: scale(1.03);
+  box-shadow: 0 20px 60px rgba(14,11,7,0.2);
+}
+.price-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+.price-popular {
+  position: absolute; top: 0; right: 0;
+  background: var(--saffron); color: #fff; font-size: 11px; font-weight: 700;
+  padding: 6px 16px; border-radius: 0 24px 0 14px; letter-spacing: .5px;
+}
+.price-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.price-card.featured .price-name { color: var(--cream); }
+.price-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+.price-card.featured .price-desc { color: rgba(245,240,232,0.5); }
+.price-amt {
+  font-family: 'Fraunces', serif; font-size: 48px; font-weight: 900;
+  color: var(--saffron); line-height: 1; margin-bottom: 4px;
+}
+.price-per { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+.price-card.featured .price-per { color: rgba(245,240,232,0.5); }
+.price-trial { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 24px; }
+.price-feats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.price-feat { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.price-feat::before { content: '✓'; width: 20px; height: 20px; border-radius: 50%; background: rgba(26,122,74,0.12); color: var(--green); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.price-card.featured .price-feat { color: rgba(245,240,232,0.8); }
+.price-card.featured .price-feat::before { background: rgba(232,96,10,0.2); color: var(--saffron2); }
+.price-btn {
+  display: block; width: 100%; padding: 14px;
+  border-radius: 14px; text-align: center; font-size: 15px; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all .2s;
+}
+.price-btn.dark { background: var(--ink); color: var(--cream); }
+.price-btn.dark:hover { background: var(--saffron); }
+.price-btn.saffron { background: var(--saffron); color: #fff; box-shadow: 0 6px 24px rgba(232,96,10,0.35); }
+.price-btn.saffron:hover { background: #c04d05; }
+
+/* ── WA SECTION ── */
+.wa-section {
+  background: var(--ink); padding: 100px 48px; text-align: center;
+}
+.wa-section h2 {
+  font-family: 'Fraunces', serif; font-size: clamp(32px,4.5vw,64px);
+  font-weight: 900; letter-spacing: -1.5px; color: var(--cream);
+  margin-bottom: 16px; line-height: 1.05;
+}
+.wa-section h2 em { color: var(--saffron); font-style: italic; }
+.wa-section p { font-size: 18px; color: rgba(245,240,232,0.5); max-width: 560px; margin: 0 auto 40px; line-height: 1.7; }
+
+.wa-form {
+  display: flex; gap: 10px; max-width: 480px; margin: 0 auto 20px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px; padding: 8px;
+}
+.wa-form .prefix {
+  background: rgba(255,255,255,0.08); color: rgba(245,240,232,0.6);
+  padding: 12px 14px; border-radius: 12px; font-size: 14px; font-weight: 600;
+  white-space: nowrap; display: flex; align-items: center; gap: 6px;
+}
+.wa-form input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--cream); font-family: 'DM Sans', sans-serif;
+  font-size: 16px; font-weight: 500; padding: 12px 4px;
+}
+.wa-form input::placeholder { color: rgba(245,240,232,0.25); }
+.wa-form button {
+  background: var(--wa); color: #fff; border: none; border-radius: 12px;
+  padding: 12px 20px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap;
+  transition: background .2s; display: flex; align-items: center; gap: 8px;
+}
+.wa-form button:hover { background: #1ebe5a; }
+.wa-guarantee {
+  font-size: 13px; color: rgba(245,240,232,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+}
+.wa-guarantee span { display: flex; align-items: center; gap: 5px; }
+
+/* ── FOOTER ── */
+footer {
+  background: #080604; color: rgba(245,240,232,0.3);
+  padding: 40px 48px; display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.footer-logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--saffron); }
+.footer-logo span { color: rgba(245,240,232,0.4); }
+footer p { font-size: 13px; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: rgba(245,240,232,0.3); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: var(--saffron); }
+
+/* ── WHATSAPP POPUP ── */
+.wa-popup-overlay {
+  position: fixed; inset: 0; background: rgba(8,6,4,0.7); z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+  backdrop-filter: blur(8px);
+}
+.wa-popup-overlay.open { opacity: 1; pointer-events: all; }
+.wa-popup {
+  background: var(--cream); border-radius: 28px; padding: 40px;
+  max-width: 420px; width: 90%; text-align: center;
+  transform: scale(.9); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 32px 80px rgba(8,6,4,0.4);
+}
+.wa-popup-overlay.open .wa-popup { transform: scale(1); }
+.wa-popup-ico { font-size: 64px; margin-bottom: 16px; }
+.wa-popup h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900; margin-bottom: 10px; letter-spacing: -.5px; }
+.wa-popup p { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+.wa-popup .phone-display {
+  background: var(--warm); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px; font-size: 22px; font-weight: 700; letter-spacing: 2px;
+  margin-bottom: 24px; color: var(--ink);
+}
+.wa-open-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; background: var(--wa); color: #fff; border: none;
+  border-radius: 16px; padding: 16px; font-size: 17px; font-weight: 700;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background .2s, transform .15s;
+  box-shadow: 0 8px 32px rgba(37,211,102,0.3); margin-bottom: 12px;
+}
+.wa-open-btn:hover { background: #1ebe5a; transform: scale(1.02); }
+.wa-close { font-size: 14px; color: var(--text-muted); cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.wa-close:hover { color: var(--saffron); }
+
+/* ── FLOATING WA BUTTON ── */
+.wa-float {
+  position: fixed; bottom: 28px; right: 28px; z-index: 200;
+  background: var(--wa); color: #fff;
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; box-shadow: 0 8px 32px rgba(37,211,102,0.4);
+  cursor: pointer; border: none; transition: transform .2s;
+  animation: float 3s ease-in-out infinite;
+}
+.wa-float:hover { transform: scale(1.1); }
+
+/* scroll reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; gap: 40px; }
+  .hero-visual { display: none; }
+  .number-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .testimonial-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card.featured { transform: none; }
+  .problem-section, .proof-section { padding: 60px 20px; }
+  .how-section, .pricing-section, .wa-section { padding: 60px 20px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+  .float-badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Reward<span>X</span> <sup>for Restaurants</sup></div>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#proof">Success Stories</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <a class="nav-cta" href="#" onclick="openPopup(event)">
+    💬 Start Free on WhatsApp
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="dot"></div>
+      🍽️ Built exclusively for Indian restaurants & dhabas
+    </div>
+    <h1>
+      Turn your <em>regulars</em> into<br>
+      <span class="underline-word">loyal fans</span> — automatically
+    </h1>
+    <p class="hero-sub">
+      RewardX gives your restaurant a <strong>WhatsApp-powered loyalty program</strong> in under 5 minutes. No app download. No tech team. Just more repeat customers — every single day.
+    </p>
+    <div class="hero-actions">
+      <button class="wa-signup-btn" onclick="openPopup(event)">
+        <span class="wa-ico">💬</span>
+        Start Free on WhatsApp — Abhi!
+      </button>
+      <div class="wa-small">30-day free trial · No credit card · Setup in 5 min</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">3<span>×</span></div><div class="lbl">more repeat visits per customer</div></div>
+      <div class="hero-stat"><div class="num">₹<span>2L+</span></div><div class="lbl">avg extra revenue per month</div></div>
+      <div class="hero-stat"><div class="num">500<span>+</span></div><div class="lbl">restaurants already on RewardX</div></div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-phone-wrap">
+      <!-- Floating badges -->
+      <div class="float-badge top">
+        <div class="fb-ico">🎉</div>
+        <div class="fb-text"><strong>+150 coins earned!</strong><span>Priya just visited</span></div>
+      </div>
+      <div class="float-badge left">
+        <div class="fb-ico">📈</div>
+        <div class="fb-text"><strong>↑ 34 visits today</strong><span>vs 22 last week</span></div>
+      </div>
+      <div class="float-badge right">
+        <div class="fb-ico">💬</div>
+        <div class="fb-text"><strong>WhatsApp sent</strong><span>to 284 customers</span></div>
+      </div>
+
+      <div class="hero-phone">
+        <div class="phone-notch"></div>
+        <div class="phone-inner">
+          <div class="phone-shop-header">
+            <div class="phone-shop-logo">🍛</div>
+            <div class="phone-shop-name">Sharma's Dhaba</div>
+            <div class="phone-shop-sub">Loyalty Rewards Program</div>
+          </div>
+          <div class="phone-coin-card">
+            <div class="phone-coin-amt">850</div>
+            <div class="phone-coin-lbl">coins earned</div>
+            <div class="phone-coin-val">= ₹85 discount ready to use!</div>
+          </div>
+          <div class="phone-actions">
+            <div class="phone-act primary">🎰 Spin & Win</div>
+            <div class="phone-act secondary">🏆 Redeem</div>
+          </div>
+          <div class="phone-offer">
+            <div class="off-ico">🎁</div>
+            <div class="off-text">
+              <strong>Free Lassi on 10th visit!</strong>
+              7 more visits to go
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBER STRIP -->
+<div class="number-strip">
+  <div class="ns-item"><div class="ns-num">12Cr+</div><div class="ns-lbl">Small restaurants in India with no loyalty program</div></div>
+  <div class="ns-item"><div class="ns-num">68%</div><div class="ns-lbl">Customers return if given a rewards reason to</div></div>
+  <div class="ns-item"><div class="ns-num">5×</div><div class="ns-lbl">Cheaper to keep a customer than find a new one</div></div>
+  <div class="ns-item"><div class="ns-num">₹0</div><div class="ns-lbl">Cost to start — 30 days completely free trial</div></div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem-section reveal" id="problem">
+  <div class="section-tag">The Problem</div>
+  <h2>Zomato & Swiggy le rahe hain aapke<em> loyal customers</em></h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="pc-ico">😤</div>
+      <h3>No Customer Memory</h3>
+      <p>Raj came 8 times this month. You don't even know his name. He gets no special treatment, so he tries the new place next door.</p>
+      <div class="pc-loss">Lost: ₹3,200/month from 1 regular</div>
+    </div>
+    <div class="problem-card">
+      <div class="pc-ico">📱</div>
+      <h3>Zomato Owns Your Customers</h3>
+      <p>When a customer orders via Zomato, Zomato has their data — not you. They promote your competitor next time. You pay 25-30% commission.</p>
+      <div class="pc-loss">Lost: ₹25,000/month in commissions</div>
+    </div>
+    <div class="problem-card">
+      <div class="pc-ico">💸</div>
+      <h3>No Repeat Visit System</h3>
+      <p>You spend on flyers and Instagram ads to get new customers. But a one-time visitor brings 5× less revenue than a loyal regular.</p>
+      <div class="pc-loss">Lost: ₹50,000/month in wasted ads</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section reveal" id="how">
+  <div class="how-inner">
+    <div class="section-tag">How It Works</div>
+    <h2>5 minute mein <em>shuru</em>, lifetime results</h2>
+    <div class="steps-grid">
+      <div class="step-block" data-n="1">
+        <div class="sb-ico">💬</div>
+        <h3>WhatsApp pe Sign Up</h3>
+        <p>No forms, no app downloads. Just send us a WhatsApp message and your restaurant is live in minutes.</p>
+        <div class="sb-time">⏱ 2 minutes</div>
+      </div>
+      <div class="step-block" data-n="2">
+        <div class="sb-ico">🖨️</div>
+        <h3>QR Code Print Karo</h3>
+        <p>We send you a branded QR code. Print it, keep it at your counter. Customers scan and join your loyalty club instantly.</p>
+        <div class="sb-time">⏱ 1 minute</div>
+      </div>
+      <div class="step-block" data-n="3">
+        <div class="sb-ico">🪙</div>
+        <h3>Customers Coins Earn Karte Hain</h3>
+        <p>Every purchase = coins. Spin the wheel. Complete challenges. Customers get addicted to coming back for more rewards.</p>
+        <div class="sb-time">⏱ Automatic</div>
+      </div>
+      <div class="step-block" data-n="4">
+        <div class="sb-ico">📊</div>
+        <h3>Aap Dashboard Dekhte Ho</h3>
+        <p>See who your top customers are, what they order, when they visit. Send WhatsApp offers to bring them back on slow days.</p>
+        <div class="sb-time">⏱ Always live</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-section reveal" id="proof">
+  <div class="section-tag">Success Stories</div>
+  <h2>Real restaurants, <em>real results</em></h2>
+  <div class="testimonial-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"Pehle customers ek baar aate the, phir bhool jaate the. Ab <em>60% customers har hafte wapas aate hain.</em> RewardX ne meri dukan badal di."</div>
+      <div class="testi-person">
+        <div class="testi-av">👨‍🍳</div>
+        <div>
+          <div class="testi-name">Ramesh Yadav</div>
+          <div class="testi-biz">Yadav Dhaba, Lucknow</div>
+          <div class="testi-result">↑ ₹1.8L extra/month</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"Maine socha tha yeh sab technical hoga. Par 5 minute mein sab ho gaya. <em>Ab 300+ customers mere loyalty club mein hain.</em>"</div>
+      <div class="testi-person">
+        <div class="testi-av">👩‍🍳</div>
+        <div>
+          <div class="testi-name">Sunita Mehta</div>
+          <div class="testi-biz">Mehta's Cafe, Pune</div>
+          <div class="testi-result">↑ 3× repeat visits</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"Slow Tuesdays pe WhatsApp blast bheja — <em>'Double coins aaj!' — aur 40 extra tables aaye.</em> Magic lagta hai."</div>
+      <div class="testi-person">
+        <div class="testi-av">🧑‍🍳</div>
+        <div>
+          <div class="testi-name">Arjun Singh</div>
+          <div class="testi-biz">Singh's Restaurant, Jaipur</div>
+          <div class="testi-result">↑ ₹2.4L extra/month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section reveal" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-tag">Simple Pricing</div>
+    <h2>Seedha, simple pricing</h2>
+    <p class="pricing-sub">Koi hidden charges nahi. <strong>30 din free try karo</strong> — phir decide karo.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">🌱 Starter</div>
+        <div class="price-desc">Chhoti dukan ya single restaurant</div>
+        <div class="price-amt">₹999</div>
+        <div class="price-per">/month + 18% GST</div>
+        <div class="price-trial">✓ 30 days FREE trial</div>
+        <div class="price-feats">
+          <div class="price-feat">500 customers</div>
+          <div class="price-feat">Coin rewards system</div>
+          <div class="price-feat">WhatsApp notifications</div>
+          <div class="price-feat">QR code for counter</div>
+          <div class="price-feat">Basic dashboard</div>
+        </div>
+        <button class="price-btn dark" onclick="openPopup(event)">Start Free Trial</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-popular">MOST POPULAR</div>
+        <div class="price-name">🚀 Growth</div>
+        <div class="price-desc">Growing restaurants & cafes</div>
+        <div class="price-amt">₹2,999</div>
+        <div class="price-per">/month + 18% GST</div>
+        <div class="price-trial">✓ 30 days FREE trial</div>
+        <div class="price-feats">
+          <div class="price-feat">2,000 customers</div>
+          <div class="price-feat">Spin & Win game</div>
+          <div class="price-feat">WhatsApp blast campaigns</div>
+          <div class="price-feat">Advanced analytics</div>
+          <div class="price-feat">Razorpay integration</div>
+          <div class="price-feat">Priority WhatsApp support</div>
+        </div>
+        <button class="price-btn saffron" onclick="openPopup(event)">Start Free Trial</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">💎 Pro</div>
+        <div class="price-desc">Restaurant chains & franchises</div>
+        <div class="price-amt">₹5,999</div>
+        <div class="price-per">/month + 18% GST</div>
+        <div class="price-trial">✓ 30 days FREE trial</div>
+        <div class="price-feats">
+          <div class="price-feat">Unlimited customers</div>
+          <div class="price-feat">White-label branding</div>
+          <div class="price-feat">Multi-branch support</div>
+          <div class="price-feat">GST invoice reports</div>
+          <div class="price-feat">Dedicated account manager</div>
+        </div>
+        <button class="price-btn dark" onclick="openPopup(event)">Start Free Trial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WA CTA -->
+<section class="wa-section">
+  <h2>Ready to grow your<br><em>restaurant?</em></h2>
+  <p>Join 500+ restaurants already using RewardX. Setup in 5 minutes on WhatsApp — no tech knowledge needed.</p>
+  <div class="wa-form">
+    <div class="prefix">🇮🇳 +91</div>
+    <input type="tel" id="ctaPhone" placeholder="Apna WhatsApp number daalen" maxlength="10">
+    <button onclick="submitWA()">💬 Start Free</button>
+  </div>
+  <div class="wa-guarantee">
+    <span>🔒 No spam</span>
+    <span>✓ 30-day free trial</span>
+    <span>⚡ Setup in 5 min</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Reward<span>X</span></div>
+  <p>© 2025 RewardX India · Made with ❤️ for Indian restaurants</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">GST Invoice</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<!-- FLOATING WA -->
+<button class="wa-float" onclick="openPopup(event)" title="Chat on WhatsApp">💬</button>
+
+<!-- POPUP -->
+<div class="wa-popup-overlay" id="waPopup">
+  <div class="wa-popup">
+    <div class="wa-popup-ico">💬</div>
+    <h2>WhatsApp pe Start Karein!</h2>
+    <p>Neeche apna number daalen. Hum aapko WhatsApp karenge aur 5 minute mein aapka restaurant live hoga.</p>
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-align:left">Aapka WhatsApp Number</div>
+      <div style="display:flex;gap:8px;align-items:center;background:var(--warm);border:2px solid var(--border);border-radius:14px;padding:4px 4px 4px 14px">
+        <span style="font-size:14px;font-weight:600;color:var(--text-muted);white-space:nowrap">🇮🇳 +91</span>
+        <input type="tel" id="popupPhone" maxlength="10" placeholder="98765 43210"
+          style="flex:1;border:none;background:none;outline:none;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;padding:10px 4px;color:var(--ink)">
+      </div>
+    </div>
+    <button class="wa-open-btn" onclick="goToWhatsApp()">
+      💬 WhatsApp pe Open Karein
+    </button>
+    <button class="wa-close" onclick="closePopup()">Baad mein karenge →</button>
+  </div>
+</div>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 60);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Popup
+function openPopup(e) { e && e.preventDefault(); document.getElementById('waPopup').classList.add('open'); setTimeout(() => document.getElementById('popupPhone').focus(), 300); }
+function closePopup() { document.getElementById('waPopup').classList.remove('open'); }
+document.getElementById('waPopup').addEventListener('click', e => { if (e.target === document.getElementById('waPopup')) closePopup(); });
+
+function goToWhatsApp() {
+  const phone = document.getElementById('popupPhone').value.trim();
+  if (!phone || phone.length < 10) { document.getElementById('popupPhone').style.borderColor = 'red'; setTimeout(() => document.getElementById('popupPhone').style.borderColor = '', 1500); return; }
+  const msg = encodeURIComponent(`Namaste! Mera restaurant RewardX pe register karna hai. Mera number: +91${phone}`);
+  window.open(`https://wa.me/919999999999?text=${msg}`, '_blank');
+  closePopup();
+}
+
+function submitWA() {
+  const phone = document.getElementById('ctaPhone').value.trim();
+  if (!phone || phone.length < 10) { document.getElementById('ctaPhone').style.outline = '2px solid red'; setTimeout(() => document.getElementById('ctaPhone').style.outline = '', 1500); return; }
+  const msg = encodeURIComponent(`Namaste! Mera restaurant RewardX pe register karna hai. Mera number: +91${phone}`);
+  window.open(`https://wa.me/919999999999?text=${msg}`, '_blank');
+}
+
+// Nav scroll effect
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.padding = window.scrollY > 50 ? '10px 48px' : '18px 48px';
+});
+</script>
+</body>
+</html>
